@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.mapper.UrlMapper">
+  <resultMap id="BaseResultMap" type="com.kc.model.Url">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="urlName" jdbcType="VARCHAR" property="urlname" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="mid" jdbcType="BIGINT" property="mid" />
+    <association property="menu"  column="mid"  select="com.kc.mapper.MenuMapper.selectByPrimaryKey"></association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, urlName, url,mid
+  </sql>
+  <select id="selByMid"  resultMap="BaseResultMap">
+    select * from url where mid=#{0} 
+  </select>
+   <select id="selByUid"  resultMap="BaseResultMap">
+    SELECT * FROM url WHERE id IN(SELECT urlid FROM role_url WHERE roleid IN(SELECT rid FROM users_role WHERE uid =#{0}))
+   </select>
+   
+   <select id="selByRid" resultMap="BaseResultMap">
+    SELECT * FROM url WHERE id IN(SELECT urlid FROM role_url WHERE roleid=#{0})
+   </select>
+  <select id="selAll" resultMap="BaseResultMap">
+     select * from url
+     <where>
+     <if test="id != null">
+       id= #{id,jdbcType=BIGINT}
+      </if>
+      <if test="urlname != null">
+        and  urlname like  '%${urlname}%'
+      </if>
+      <if test="url != null">
+        and  url= #{url,jdbcType=VARCHAR}
+      </if>
+      <if test="mid != null">
+         and  mid=#{mid}
+      </if>
+     </where>
+     ORDER BY id DESC
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from url
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from url
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.kc.model.Url">
+    insert into url (id, urlName, url,mid
+      )
+    values (#{id,jdbcType=BIGINT}, #{urlname,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},#{mid}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kc.model.Url">
+    insert into url
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="urlname != null">
+        urlName,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="mid != null">
+        mid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="urlname != null">
+        #{urlname,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="mid != null">
+        #{mid,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kc.model.Url">
+    update url
+    <set>
+      <if test="urlname != null">
+        urlName = #{urlname,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+       <if test="mid != null">
+        mid = #{mid,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kc.model.Url">
+    update url
+    set urlName = #{urlname,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      mid = #{mid,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

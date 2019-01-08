@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common::head('菜单管理')" >
+<meta charset="utf-8"/>
+</head>
+<body>    
+    <div class="panel">
+    <div class="panel-heading">
+      
+      <form  role="form" class="form-inline">
+	      					<div class="input-group" >	
+	                        <select class="form-control  parentid" name="parentid" >
+								        <option value="-1">未选择</option>							        
+								        <option  th:each="menu1:${parentMenu}"  th:if="${menu1.parentid==0}"   th:value="${menu1.id}" th:text="${menu1.menuname}"></option>
+								</select>
+								</div>			
+					<div class="input-group" >					       
+						<input type="text" value=""  name="name" class="form-control searchVal"  placeholder="按角色名查找">
+						<div class="input-group-btn">
+						  <span  class="btn btn-primary"  id="search"><i class="glyphicon glyphicon-search"></i></span>						 
+						</div>	
+						</div>										
+				</form>		
+    </div>
+    <div class="panel-body">     	        
+       <table class="table table-bordered table-responsive"  >
+				  <caption>菜单列表</caption>
+				  <thead>
+				    <tr>
+				      <th>编号</th>				  
+				      <th>菜单名</th>
+				      <th>菜单描述</th>
+				      <th>菜单图标</th>
+				      <th>菜单链接</th>
+				      <th>父级菜单</th>
+				      <th>创建者</th>
+				      <th>创建时间</th>
+				      <th>操作</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				      <th:block th:if="${pageInfo.list != null}">
+				          <tr th:each="menu,menuStart: ${pageInfo.list}">
+						      <td th:text="${menuStart.count}">560001</td>
+						      <td th:text="${menu.menuname}">Tanmay</td>
+						      <td th:text="${menu.description}">Bangalore</td>	
+						      <td th:text="${menu.icon}">Bangalore</td>	
+						      <td th:text="${menu.url}">Bangalore</td>		
+						      <td th:text="${menu.parentMenu!=null ? menu.parentMenu.menuname:'一级菜单'}">Bangalore</td>			     
+						      <td th:text="${menu.creaters!=null?menu.creaters.username:'空' }">560001</td>
+						      <td th:text="${#dates.format(menu.createTime,'yyyy-MM-dd')}">560001</td>
+						      <td>
+						      <a  class="update" th:href="@{/menu/add(id=${menu.id})}"  style="color: green;margin-right:20px;" th:title="${menu.id}" ><i class="glyphicon glyphicon-refresh"></i></a>
+						      <a  class="remove"  href="/menu/remove" style="color: red"  th:title="${menu.id}"><i class="glyphicon glyphicon-trash"></i></a>						      
+						      </td>
+				    		</tr>		
+				      </th:block>		    
+				  </tbody>
+			</table>
+			
+			<nav aria-label="Page navigation">
+		  <ul class="pagination">
+		   <th:block th:if="${!pageInfo.isFirstPage}">
+		     <li>		       
+		          <a href="#" aria-label="Previous"  th:href="@{/menu/index(number=${pageInfo.prePage})}" >
+		           <span aria-hidden="true">&laquo;</span>
+		           </a>		       
+		     </li>
+		      </th:block>
+		    <th:block  th:each="nums:${pageInfo.navigatepageNums}">
+		      <li th:class="${nums==pageInfo.pageNum? 'active' : ''}">
+		      		<a href="#"  th:href="@{/menu/index(number=${nums})}"  th:text="${nums}"  >1</a>
+		      </li>
+		    </th:block>
+		    
+		    <th:block th:if="${!pageInfo.isLastPage}">
+				    <li>
+				      <a href="#" aria-label="Next"   th:href="@{/menu/index(number=${pageInfo.nextPage})}" > 
+				        <span aria-hidden="true">&raquo;</span>
+				      </a>
+				    </li>
+		    </th:block>
+		     
+  		</ul>
+</nav>
+ </div>
+  </div>
+    <script type="text/javascript">     
+      $(function(){    	  
+    	  $(".remove").on("click",function(){
+      	    var url=$(this).attr("href");
+      	    var id=$(this).attr("title");   
+      	    alert(url +"  "+id);
+	      	  $.ajax(
+	      		{
+	      		  type:"POST",
+	      		  url: url,	      		  
+	      		  data:{id:id},
+	      		  success: function(data){	  
+	      			 showmsg(data);	     
+	      		   }});
+	      	     return false;
+	              });
+    	  
+    	  $("#search").on("click",function(){
+    		      var parentid=$(".parentid").val();
+    		      if(parentid==-1){
+    		    	  parentid='';
+    		        }
+    		       var name=$(".searchVal").val();
+    		      window.location.href = "/menu/index?menuname="+name+"&&parentid="+parentid; 
+    		      return false;
+    	      });
+          });
+       
+      function showmsg(data){
+    	  if(data.status>200){
+		    	toastr.warning(data.msg);  
+		       }
+		    else{
+		    	toastr.success(data.msg);
+		      }
+		 setTimeout(function(){
+			window.location.reload();	      				 
+		    },1000);
+      }
+      
+      toastr.options = {  
+    	        closeButton: false,  
+    	        debug: false,  
+    	        progressBar: false,  
+    	        positionClass: "toast-bottom-center",  
+    	        onclick: null,  
+    	        showDuration: "300",  
+    	        hideDuration: "1000",  
+    	        timeOut: "2000",  
+    	        extendedTimeOut: "1000",  
+    	        showEasing: "swing",  
+    	        hideEasing: "linear",  
+    	        showMethod: "fadeIn",  
+    	        hideMethod: "fadeOut"  
+    	    };  
+    </script>
+</body>
+</html>

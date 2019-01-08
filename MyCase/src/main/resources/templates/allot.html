@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" class="fullscreen-bg" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common::head('角色授权')" >
+<meta charset="UTF-8">
+</head>
+<body>
+    <div class="panel">
+   
+     <div class="panel-body">
+      <a>角色授权</a>
+      <hr>
+         <form action=""  role="form"  class="form">
+         <div class="row">
+               <div class="col-md-6"  th:each="menu,menuStart:${map?.menuList}"  style="height:60px;">               
+                   <div class="checkbox checkbox-success"  th:if="${menu.childrenMenu != null}" >   
+		                        <input type="checkbox"  class="all styled"  th:id="|m1${menu.id}|">
+		                        <label th:for="|m1${menu.id}|"  th:text="${menu.menuname}" > Inline One </label>               		                                     
+                   </div>  
+                   <th:block  th:if="${menu.childrenMenu != null}"  th:each="menu2,menu2Start:${menu.childrenMenu}" >
+                    <div  class="checkbox checkbox-inline checkbox-success"  th:each="url:${map.urlList}"  th:if="${url.mid ==menu2.id}">                                          				   				       
+						     <input type="checkbox"  class="send  styled"   th:id="|m2${menu2.id}|"   th:value="${url.id}"  th:if="${url.exits==true}"   th:title="${url.mid}" checked>
+						     <input type="checkbox"  class="send  styled"    th:id="|m2${menu2.id}|"   th:value="${url.id}"    th:if="${url.exits!=true}"  th:title="${url.mid}" >			                                                               					           				  		   
+						     <label th:for="|m2${menu2.id}|"  th:text="${url.urlname}"> Inline One </label>  				      			      			       			      				       				          						 		  	 
+                      </div>    
+                   </th:block>                        
+            
+            </div>
+		</div>         
+            <div class="form-group text-righ">						    
+						      <button type="submit"   class="submit btn btn-primary pull-right ">授权</button>
+						 </div>
+						 
+         </form>
+       </div>
+     </div>
+     <script type="text/javascript" th:inline="javascript">
+    
+		     function changeState(el) {
+		         if (el.readOnly) el.checked=el.readOnly=false;
+		         else if (!el.checked) el.readOnly=el.indeterminate=true;
+		     }
+
+           $(".all").on("click",function(){
+        	       var ischeckd=$(this).prop("checked");        	      
+                   var childs= $(this).parent("div").nextAll("div").children("input"); 	 
+                   childs.prop('checked',ischeckd);                                                        
+               });
+           
+        $(".checkbox-inline input[checkbox]").on("click",function(){  
+                	     var allNum=$(this).parent(".checkbox-inline").children("input").length;
+                	     var checkedNum=$(this).parent(".checkbox-inline").find("input:checked").length; 
+                	     alert(allNum +"  "+ checkedNum);
+                	     $(this).parent("label").parent("div").prev("label").children("input").prop("checked",checkedNum>0?true:false);
+          });
+        
+        $(".form").on("submit",function(e){
+        	e.preventDefault();
+        	var uid = new Array();
+        	var mid = new Array();
+        	var val=$(".checkbox-inline :checked");
+        	val.each(function(i){
+        		uid[i] = $(this).val();
+        		mid[i]=$(this).attr("title");
+			  });
+        	
+        	var new_arr=[];
+        	for(var i=0;i<mid.length;i++) {
+        	　　var items=mid[i];
+        	　　//判断元素是否存在于new_arr中，如果不存在则插入到new_arr的最后
+        	　　if($.inArray(items,new_arr)==-1) {
+        	　　　　new_arr.push(items);
+        	　　}
+        	}
+        	var uids = uid.join(",");
+        	var mids=new_arr.join(",");
+        	var rid = [[${map.rid}]];    
+        	rid=parseInt(rid);
+        	var date={rid:rid,uids:uids,mids:mids};
+        	console.log(date);
+        	console.log(typeof rid);
+        	console.log(typeof uids);
+        	console.log(typeof mids)
+        	 
+        	$.ajax(
+    	      		{  type:"post",
+    	      		   url: '/role/allot',    	      		   
+    	      		   data:date,
+    	      		   success: function(data){	     	      			
+    	       		   
+    	       		     if(data.status>200){
+     	       		    	toastr.warning(data.msg);  
+     	       		    setTimeout(function(){
+     	       		    	window.location.reload();
+     	       		     },2000);
+     	       		       }
+     	       		    else{
+     	       		    	toastr.success(data.msg);
+     	       		       setTimeout(function(){
+     	       		    	window.location.href = "/role/index";
+     	       		        },2000);
+     	       		      } 				 
+    	       		   
+    	      			   
+    	      		   }});
+        	
+           });
+        
+       
+     </script>
+</body>
+</html>

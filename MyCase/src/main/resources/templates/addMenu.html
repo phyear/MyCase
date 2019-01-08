@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common::head('添加菜单')" >
+<meta charset="utf-8"/>
+</head>
+<body>    
+  <div class="panel">
+     <div class="panel-body">
+     <form action="/menu/add"  method="post"  class="form-horizontal rolefrom " >
+          
+                       <div class="form-group">
+							<input type="text" class="form-control id  hidden"   th:value="${menu?.id}" placeholder="请输入名称">
+						</div>	
+			          <div class="form-group" >
+							<label for="name"  class="col-sm-2 control-label">菜单名称</label>
+							<div class="col-sm-6">
+							<input type="text" class="form-control name "   id="name"  th:value="${menu?.menuname}" placeholder="请输入名称">
+						    </div>
+						</div>
+						<div class="form-group">
+						
+							<label for="desc"  class="col-sm-2 control-label">菜单描述</label>
+							<div class="col-sm-6">
+							<input type="text" class="form-control desc "  id="desc" th:value="${menu?.description}"   name="" placeholder="请输入菜单描述">
+						     </div>
+						</div>
+						<div class="form-group">
+							<label for="url"  class="col-sm-2 control-label">菜单链接</label>
+							<div class="col-sm-6">
+							<input type="text" class="form-control url "  th:value="${menu?.url}"   name=""  placeholder="/dept/index(可以为空)">
+						    </div>
+						</div>
+						
+						<div class="form-group  controls">
+							<label for="icon"   class="col-sm-2 control-label">菜单图标</label>
+							<div class="col-sm-6">
+							<input type="text" class="form-control"   id="icon"  th:value="${menu?.icon}"  name=""  placeholder="菜单对应的图标">
+						    </div>
+						</div>
+						<div class="form-group">
+							<label for="parentid" class="col-sm-2 control-label">选择父级菜单</label>
+							<div class="col-sm-4">
+							<select class="form-control  parentid " name="parentid" >
+							        <option value="0">不选择(一级菜单)</option>
+							        <option  th:each="menu1:${allMenu}"  th:if="${menu?.parentid==menu1?.id}"   selected="selected" th:value="${menu1.id}" th:text="${menu1.menuname}"></option>
+							        <option  th:each="menu1:${allMenu}"  th:if="${menu?.parentid!=menu1?.id}"   th:value="${menu1.id}" th:text="${menu1.menuname}"></option>
+							</select>
+							</div>
+						</div>
+						
+						<div class="form-group text-righ">	
+							  <div class="col-sm-8">					    
+						      <button  type="submit"   th:if="${menu?.id==null}" class="submit btn btn-primary pull-right ">创建</button>
+						       <button  type="submit"   th:if="${menu?.id!=null}" class="submit btn btn-primary pull-right ">更新</button>
+						      </div>
+						 </div>
+						 <div class="clearfix"></div>
+			       </form>
+			      
+     </div>
+    </div>
+    <script type="text/javascript">
+      $(function(){	 
+    	  //表单提交事件
+    	  $(".rolefrom").on("submit",function(e){
+    		  e.preventDefault();
+    		  var url="/menu/add";
+    		  var id=null;
+    		  if($(".rolefrom .id").val()!=null){
+    			 id=parseInt($(".rolefrom .id").val());
+    		    }    		  
+    		  var menuname=$(".rolefrom .name").val();   		  
+    		  var description=$(".rolefrom .desc").val();   
+    		  var urls=$(".rolefrom .url").val();
+    		  var icon=$(".rolefrom .icon").val();
+    		  var parentid=parseInt($(".rolefrom .parentid").val());
+    		  var date={id:id,name:menuname,description:description,url:urls,icon:icon,parentid:parentid};
+    		  $.ajax(
+    		      		{   type:"POST",
+    		      		   url: url,
+    		      		   contentType:'application/json;charset=utf-8',
+    		      		   data:JSON.stringify(date),
+    		      		   success: function(data){	  
+    		      			 showmsg(data);   		      			
+    		      		   },
+    		      		  error: function (xhr) {
+    		      	        console.log(xhr);
+    		      	    } });
+    	     });
+          });
+      
+    //弹出提示框
+      function showmsg(data){
+    	  if(data.status>200){
+		    	toastr.warning(data.msg);
+		    	setTimeout(function(){
+    		    	window.location.reload();
+    		    	},2000);
+		       }
+		    else{			    	
+		    	toastr.success(data.msg);
+		    	setTimeout(function(){		    
+		        window.location.href ="/menu/index?one=1";
+		    	},2000);
+		      }
+		 
+      }
+      
+      toastr.options = {  
+    	        closeButton: false,  
+    	        debug: false,  
+    	        progressBar: false,  
+    	        positionClass: "toast-bottom-center",  
+    	        onclick: null,  
+    	        showDuration: "300",  
+    	        hideDuration: "1000",  
+    	        timeOut: "2000",  
+    	        extendedTimeOut: "1000",  
+    	        showEasing: "swing",  
+    	        hideEasing: "linear",  
+    	        showMethod: "fadeIn",  
+    	        hideMethod: "fadeOut"  
+    	    };  
+    </script>
+</body>
+</html>

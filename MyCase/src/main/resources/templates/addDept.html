@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common::head('创建部门')" >
+<meta charset="utf-8"/>
+</head>
+<body>    
+  <div class="panel">
+     <div class="panel-body">
+     <form action="/dept/add"  method="post"  class="form rolefrom" >
+			          <div class="form-group">
+							<label for="name">部门名称</label>
+							<input type="text" class="form-control name"  placeholder="请输入名称">
+						</div>
+							<div class="form-group">
+							<label for="preDept">选择父级部门：</label>
+							<select class="form-control  preDept" name="preDept" >
+							        <option value="0">不选择</option>
+							        <option  th:each="dept:${allDept}" th:value="${dept.id}" th:text="${dept.name}"></option>
+							</select>
+						</div>
+						<div class="form-group text-righ">						    
+						      <button  type="submit"   class="submit btn btn-primary pull-right ">创建</button>
+						 </div>
+						 <div class="clearfix"></div>
+			       </form>
+     </div>
+    </div>
+    <script type="text/javascript">
+      
+      $(function(){
+    	  $(".rolefrom").on("submit",function(e){
+    		  e.preventDefault();
+    		  var url=$(".rolefrom").attr("action");
+    		  var id=null;
+    		  if($(".rolefrom .id").val()!=null){
+    			 id=parseInt($(".rolefrom .id").val());
+    		     }    		  
+    		  var name=$(".rolefrom .name").val();
+    		  var preDept=$(".rolefrom .preDept").val();     		
+    		  var date={id:id,name:name,preDept:preDept}
+    		  $.ajax(
+    		      		{type:"POST",
+    		      		   url: url,
+    		      		   contentType:'application/json;charset=utf-8',
+    		      		   data:JSON.stringify(date),
+    		      		   success: function(data){	  
+    		      			 showmsg(data);  		      			
+    		      		   },
+    		      		  error: function (xhr) {
+    		      	        console.log(xhr);
+    		      	    } });
+    	     });
+          });
+      
+      function showmsg(data){
+    	  if(data.status>200){
+		    	toastr.warning(data.msg);
+		    	setTimeout(function(){
+    		    	window.location.reload();
+    		    	},2000);
+		       }
+		    else{		    	
+		    	toastr.success(data.msg);
+		    	setTimeout(function(){		    
+		    	 window.location.href ="/dept/index?one=1";
+		    	},2000);
+		      }
+		 
+      }
+      
+      toastr.options = {  
+    	        closeButton: false,  
+    	        debug: false,  
+    	        progressBar: false,  
+    	        positionClass: "toast-top-full-width",  
+    	        onclick: null,  
+    	        showDuration: "300",  
+    	        hideDuration: "1000",  
+    	        timeOut: "2000",  
+    	        extendedTimeOut: "1000",  
+    	        showEasing: "swing",  
+    	        hideEasing: "linear",  
+    	        showMethod: "fadeIn",  
+    	        hideMethod: "fadeOut"  
+    	    };  
+    </script>
+</body>
+</html>

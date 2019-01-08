@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.mapper.CaseOperaLogMapper">
+  <resultMap id="BaseResultMap" type="com.kc.model.CaseOperaLog">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="case_id" jdbcType="INTEGER" property="caseId" />
+    <result column="log_desc" jdbcType="VARCHAR" property="logDesc" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="next_status" jdbcType="TINYINT" property="nextStatus" />
+    <result column="pre_status" jdbcType="TINYINT" property="preStatus" />
+    <association property="nextState" column="next_status" select="com.kc.mapper.CaseStatusMapper.selectByPrimaryKey" />
+	<association property="preState" column="pre_status" select="com.kc.mapper.CaseStatusMapper.selectByPrimaryKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, case_id, log_desc, create_date, user_id, next_status, pre_status
+  </sql>
+    
+   <select id="selByCaseId" resultMap="BaseResultMap">
+   select * from case_opera_log where case_id = #{0}
+   </select>
+   
+   <!-- 根据主键查询 -->
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from case_opera_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from case_opera_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kc.model.CaseOperaLog">
+    insert into case_opera_log (id, case_id, log_desc, 
+      create_date, user_id, next_status, 
+      pre_status)
+    values (#{id,jdbcType=INTEGER}, #{caseId,jdbcType=INTEGER}, #{logDesc,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{userId,jdbcType=BIGINT}, #{nextStatus,jdbcType=TINYINT}, 
+      #{preStatus,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kc.model.CaseOperaLog">
+    insert into case_opera_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="caseId != null">
+        case_id,
+      </if>
+      <if test="logDesc != null">
+        log_desc,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="nextStatus != null">
+        next_status,
+      </if>
+      <if test="preStatus != null">
+        pre_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="caseId != null">
+        #{caseId,jdbcType=INTEGER},
+      </if>
+      <if test="logDesc != null">
+        #{logDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="nextStatus != null">
+        #{nextStatus,jdbcType=TINYINT},
+      </if>
+      <if test="preStatus != null">
+        #{preStatus,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kc.model.CaseOperaLog">
+    update case_opera_log
+    <set>
+      <if test="caseId != null">
+        case_id = #{caseId,jdbcType=INTEGER},
+      </if>
+      <if test="logDesc != null">
+        log_desc = #{logDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="nextStatus != null">
+        next_status = #{nextStatus,jdbcType=TINYINT},
+      </if>
+      <if test="preStatus != null">
+        pre_status = #{preStatus,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kc.model.CaseOperaLog">
+    update case_opera_log
+    set case_id = #{caseId,jdbcType=INTEGER},
+      log_desc = #{logDesc,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=BIGINT},
+      next_status = #{nextStatus,jdbcType=TINYINT},
+      pre_status = #{preStatus,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

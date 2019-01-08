@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common::head('权限管理')" >
+<meta charset="utf-8"/>
+</head>
+<body>    
+    <div class="panel">
+    <div class="panel-heading">
+      
+      <form  role="form" class="form-inline">                              
+	      					<div class="input-group" >	
+	                           <select class="form-control  parentid" name="parentid" >
+								        <option value="-1">未选择</option>							        
+								        <option  th:each="menu1:${sendMenu}"    th:value="${menu1.id}" th:text="${menu1.menuname}"></option>
+								</select>
+								</div>		
+					<div class="input-group" >					       
+						<input type="text" value=""  name="name" class="form-control searchVal"  placeholder="按权限名查找">
+						<div class="input-group-btn">
+						  <span  class="btn btn-primary"  id="search"><i class="glyphicon glyphicon-search"></i></span>						 
+						</div>	
+						</div>										
+				</form>		
+    </div>
+    <div class="panel-body">     	        
+       <table class="table table-bordered table-responsive"  >
+				  <caption>菜单列表</caption>
+				  <thead>
+				    <tr>
+				      <th>编号</th>				  
+				      <th>权限名</th>				   
+				      <th>菜单链接</th>
+				      <th>所属菜单</th>				   
+				      <th>操作</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				      <th:block th:if="${pageInfo.list != null}">
+				          <tr th:each="urls,urlsStart: ${pageInfo.list}">
+						      <td th:text="${urlsStart.count}">560001</td>
+						      <td th:text="${urls.urlname}">Tanmay</td>
+						      <td th:text="${urls.url}">Bangalore</td>	
+						      <td th:text="${urls?.menu?.menuname}">Bangalore</td>							  
+						      <td>
+						      <a  class="update" th:href="@{/url/add(id=${urls?.id})}"  style="color: green;margin-right:20px;" th:title="${urls.id}" ><i class="glyphicon glyphicon-refresh"></i></a>
+						      <a  class="remove"  href="/url/remove" style="color: red"  th:title="${urls?.id}"><i class="glyphicon glyphicon-trash"></i></a>						      
+						      </td>
+				    		</tr>		
+				      </th:block>		    
+				  </tbody>
+			</table>
+			
+			<nav aria-label="Page navigation">
+		  <ul class="pagination">
+		   <th:block th:if="${!pageInfo.isFirstPage}">
+		     <li>		       
+		          <a href="#" aria-label="Previous"  th:href="@{/url/index(number=${pageInfo.prePage})}" >
+		           <span aria-hidden="true">&laquo;</span>
+		           </a>		       
+		     </li>
+		      </th:block>
+		    <th:block  th:each="nums:${pageInfo.navigatepageNums}">
+		      <li th:class="${nums==pageInfo.pageNum? 'active' : ''}">
+		      		<a href="#"  th:href="@{/url/index(number=${nums})}"  th:text="${nums}"  >1</a>
+		      </li>
+		    </th:block>
+		    
+		    <th:block th:if="${!pageInfo.isLastPage}">
+				    <li>
+				      <a href="#" aria-label="Next"   th:href="@{/url/index(number=${pageInfo.nextPage})}" > 
+				        <span aria-hidden="true">&raquo;</span>
+				      </a>
+				    </li>
+		    </th:block>
+		     
+  		</ul>
+</nav>
+ </div>
+  </div>
+    <script type="text/javascript">     
+      $(function(){    	  
+    	  $(".remove").on("click",function(){
+      	    var url=$(this).attr("href");
+      	    var id=$(this).attr("title");      	  
+	      	  $.ajax(
+	      		{type:"get",
+	      		   url: url,
+	      		   contentType:'application/json;charset=utf-8',
+	      		   data:{id:id},
+	      		   success: function(data){	  
+	      			 showmsg(data);	     
+	      		   }});
+	      	     return false;
+	              });
+    	  
+    	  $("#search").on("click",function(){
+    		      var mid=$(".parentid").val();
+    		    
+    		      var name=$(".searchVal").val();
+    		      if(mid==-1){
+    		    	  mid='';
+    		        }
+    		      mid=parseInt(mid);
+    		      window.location.href = "/url/index?urlname="+name+"&&mid="+mid; 
+    		      return false;
+    	      });
+          });
+       
+      function showmsg(data){
+    	  if(data.status>200){
+		    	toastr.warning(data.msg);  
+		       }
+		    else{
+		    	toastr.success(data.msg);
+		      }
+		 setTimeout(function(){
+			window.location.reload();	      				 
+		    },1000);
+      }
+      
+      toastr.options = {  
+    	        closeButton: false,  
+    	        debug: false,  
+    	        progressBar: false,  
+    	        positionClass: "toast-bottom-center",  
+    	        onclick: null,  
+    	        showDuration: "300",  
+    	        hideDuration: "1000",  
+    	        timeOut: "2000",  
+    	        extendedTimeOut: "1000",  
+    	        showEasing: "swing",  
+    	        hideEasing: "linear",  
+    	        showMethod: "fadeIn",  
+    	        hideMethod: "fadeOut"  
+    	    };  
+    </script>
+</body>
+</html>

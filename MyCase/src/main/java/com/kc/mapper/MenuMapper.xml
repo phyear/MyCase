@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.mapper.MenuMapper">
+  <resultMap id="BaseResultMap" type="com.kc.model.Menu">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="menuName" jdbcType="VARCHAR" property="menuname" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="parentId" jdbcType="BIGINT" property="parentid" />   
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creater" jdbcType="BIGINT" property="creater" />
+    <result column="icon"  property="icon"  jdbcType="VARCHAR"  />
+    <association property="parentMenu" column="parentId" select="selectByPrimaryKey" />     
+     <association property="creaters"  column="creater"  select="com.kc.mapper.UsersMapper.selecByUid"></association>
+     <collection property="childrenMenu" column="id" select="selectByparentId"/>  
+     
+   </resultMap>
+  
+  <select  id="selByUid" resultType="com.kc.model.Menu">
+     select * from menu where  id in(select menuId from role_menu where roleId in(select rid from users_role where uid=#{0}))
+     UNION(SELECT * FROM menu WHERE  id IN(SELECT parentId FROM menu WHERE  id IN(SELECT menuId FROM role_menu WHERE roleId IN(SELECT rid FROM users_role WHERE uid=#{0})) ))
+  </select>
+  <select id="selTree"  resultMap="BaseResultMap">
+      select * from menu where parentId =0
+  </select>
+   <select id="selAll"  resultMap="BaseResultMap">
+      select * from menu
+      <where>
+      <if test="id != null">
+        and  id=#{id,jdbcType=BIGINT},
+      </if>
+      <if test="menuname != null">
+       and menuName  like '%${menuname}%'
+      </if>
+      <if test="description != null">
+       and description=#{description,jdbcType=VARCHAR}
+      </if>
+      <if test="parentid != null">
+        and parentid=#{parentid,jdbcType=BIGINT}
+      </if>
+      <if test="creater != null">
+       and creater= #{creater,jdbcType=BIGINT}
+      </if>
+      <if test="createTime != null">
+       and create_time=  #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      </where>
+   </select>
+   
+  <select id="selSendMenu"  resultMap="BaseResultMap">
+    select * from menu where parentId > 0
+  </select>
+  
+  <!-- 查询子菜单 -->
+  <select id="selectByparentId"  resultType="com.kc.model.Menu">
+            select * from menu where parentId=#{0}
+  </select>
+  
+  <sql id="Base_Column_List">
+    id, menuName, description, url, parentId, creater, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from menu
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from menu
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.kc.model.Menu">
+    insert into menu (id, menuName, description, 
+      url, parentId, creater, 
+      create_time)
+    values (#{id,jdbcType=BIGINT}, #{menuname,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{parentid,jdbcType=BIGINT}, #{creater,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kc.model.Menu">
+    insert into menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="menuname != null">
+        menuName,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="parentid != null">
+        parentId,
+      </if>
+      <if test="creater != null">
+        creater,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="menuname != null">
+        #{menuname,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null">
+        #{parentid,jdbcType=BIGINT},
+      </if>
+      <if test="creater != null">
+        #{creater,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kc.model.Menu">
+    update menu
+    <set>
+      <if test="menuname != null">
+        menuName = #{menuname,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null">
+        parentId = #{parentid,jdbcType=BIGINT},
+      </if>
+      <if test="creater != null">
+        creater = #{creater,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kc.model.Menu">
+    update menu
+    set menuName = #{menuname,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      parentId = #{parentid,jdbcType=BIGINT},
+      creater = #{creater,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

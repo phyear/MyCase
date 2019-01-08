@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kc.mapper.CaseMapper">
+  <resultMap id="BaseResultMap" type="com.kc.model.Case">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="debtor_name" jdbcType="VARCHAR" property="debtorName" />
+    <result column="customer_linkman_name" jdbcType="VARCHAR" property="customerLinkmanName" />
+    <result column="customer_linkman_tel" jdbcType="VARCHAR" property="customerLinkmanTel" />
+    <result column="debtor_user_name" jdbcType="VARCHAR" property="debtorUserName" />
+    <result column="debtor_linkman_name" jdbcType="VARCHAR" property="debtorLinkmanName" />
+    <result column="debtor_linkman_tel" jdbcType="VARCHAR" property="debtorLinkmanTel" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="brokerage" jdbcType="DECIMAL" property="brokerage" />
+    <result column="brokerage_rate" jdbcType="DECIMAL" property="brokerageRate" />
+    <result column="brokerage_desc" jdbcType="VARCHAR" property="brokerageDesc" />
+    <result column="brokerage_paid" jdbcType="DECIMAL" property="brokeragePaid" />
+    <result column="invoice" jdbcType="DECIMAL" property="invoice" />
+    <result column="contract_begin_date" jdbcType="TIMESTAMP" property="contractBeginDate" />
+    <result column="contract_end_date" jdbcType="TIMESTAMP" property="contractEndDate" />
+    <result column="contract_money" jdbcType="DECIMAL" property="contractMoney" />
+    <result column="contract_paid_money" jdbcType="DECIMAL" property="contractPaidMoney" />
+    <result column="salesman" jdbcType="VARCHAR" property="salesman" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="handle_user" jdbcType="BIGINT" property="handleUser" />
+    <result column="handle_manager" jdbcType="BIGINT" property="handleManager" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="updated_date" jdbcType="TIMESTAMP" property="updatedDate" />
+    <association property="caseStatus" column="status" select="com.kc.mapper.CaseStatusMapper.selectByPrimaryKey"/>
+    <collection property="caseOperaLog"  column="id"  select="com.kc.mapper.CaseOperaLogMapper.selByCaseId" />
+  
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, name, customer_name, debtor_name, customer_linkman_name, customer_linkman_tel, 
+    debtor_user_name, debtor_linkman_name, debtor_linkman_tel, address, brokerage, brokerage_rate, 
+    brokerage_desc, brokerage_paid, invoice, contract_begin_date, contract_end_date, 
+    contract_money, contract_paid_money, salesman, status, type, handle_user, handle_manager, 
+    create_date, updated_date
+  </sql>
+   <select id="selAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from case
+    <where>
+    
+    </where>
+   </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from case
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from case
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.kc.model.Case">
+    insert into case (id, title, name, 
+      customer_name, debtor_name, customer_linkman_name, 
+      customer_linkman_tel, debtor_user_name, debtor_linkman_name, 
+      debtor_linkman_tel, address, brokerage, 
+      brokerage_rate, brokerage_desc, brokerage_paid, 
+      invoice, contract_begin_date, contract_end_date, 
+      contract_money, contract_paid_money, salesman, 
+      status, type, handle_user, 
+      handle_manager, create_date, updated_date
+      )
+    values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{customerName,jdbcType=VARCHAR}, #{debtorName,jdbcType=VARCHAR}, #{customerLinkmanName,jdbcType=VARCHAR}, 
+      #{customerLinkmanTel,jdbcType=VARCHAR}, #{debtorUserName,jdbcType=VARCHAR}, #{debtorLinkmanName,jdbcType=VARCHAR}, 
+      #{debtorLinkmanTel,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{brokerage,jdbcType=DECIMAL}, 
+      #{brokerageRate,jdbcType=DECIMAL}, #{brokerageDesc,jdbcType=VARCHAR}, #{brokeragePaid,jdbcType=DECIMAL}, 
+      #{invoice,jdbcType=DECIMAL}, #{contractBeginDate,jdbcType=TIMESTAMP}, #{contractEndDate,jdbcType=TIMESTAMP}, 
+      #{contractMoney,jdbcType=DECIMAL}, #{contractPaidMoney,jdbcType=DECIMAL}, #{salesman,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{type,jdbcType=TINYINT}, #{handleUser,jdbcType=BIGINT}, 
+      #{handleManager,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, #{updatedDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kc.model.Case">
+    insert into case
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="customerName != null">
+        customer_name,
+      </if>
+      <if test="debtorName != null">
+        debtor_name,
+      </if>
+      <if test="customerLinkmanName != null">
+        customer_linkman_name,
+      </if>
+      <if test="customerLinkmanTel != null">
+        customer_linkman_tel,
+      </if>
+      <if test="debtorUserName != null">
+        debtor_user_name,
+      </if>
+      <if test="debtorLinkmanName != null">
+        debtor_linkman_name,
+      </if>
+      <if test="debtorLinkmanTel != null">
+        debtor_linkman_tel,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="brokerage != null">
+        brokerage,
+      </if>
+      <if test="brokerageRate != null">
+        brokerage_rate,
+      </if>
+      <if test="brokerageDesc != null">
+        brokerage_desc,
+      </if>
+      <if test="brokeragePaid != null">
+        brokerage_paid,
+      </if>
+      <if test="invoice != null">
+        invoice,
+      </if>
+      <if test="contractBeginDate != null">
+        contract_begin_date,
+      </if>
+      <if test="contractEndDate != null">
+        contract_end_date,
+      </if>
+      <if test="contractMoney != null">
+        contract_money,
+      </if>
+      <if test="contractPaidMoney != null">
+        contract_paid_money,
+      </if>
+      <if test="salesman != null">
+        salesman,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="handleUser != null">
+        handle_user,
+      </if>
+      <if test="handleManager != null">
+        handle_manager,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updatedDate != null">
+        updated_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="debtorName != null">
+        #{debtorName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerLinkmanName != null">
+        #{customerLinkmanName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerLinkmanTel != null">
+        #{customerLinkmanTel,jdbcType=VARCHAR},
+      </if>
+      <if test="debtorUserName != null">
+        #{debtorUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="debtorLinkmanName != null">
+        #{debtorLinkmanName,jdbcType=VARCHAR},
+      </if>
+      <if test="debtorLinkmanTel != null">
+        #{debtorLinkmanTel,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="brokerage != null">
+        #{brokerage,jdbcType=DECIMAL},
+      </if>
+      <if test="brokerageRate != null">
+        #{brokerageRate,jdbcType=DECIMAL},
+      </if>
+      <if test="brokerageDesc != null">
+        #{brokerageDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="brokeragePaid != null">
+        #{brokeragePaid,jdbcType=DECIMAL},
+      </if>
+      <if test="invoice != null">
+        #{invoice,jdbcType=DECIMAL},
+      </if>
+      <if test="contractBeginDate != null">
+        #{contractBeginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractEndDate != null">
+        #{contractEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractMoney != null">
+        #{contractMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="contractPaidMoney != null">
+        #{contractPaidMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="salesman != null">
+        #{salesman,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="handleUser != null">
+        #{handleUser,jdbcType=BIGINT},
+      </if>
+      <if test="handleManager != null">
+        #{handleManager,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null">
+        #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kc.model.Case">
+    update case
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="debtorName != null">
+        debtor_name = #{debtorName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerLinkmanName != null">
+        customer_linkman_name = #{customerLinkmanName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerLinkmanTel != null">
+        customer_linkman_tel = #{customerLinkmanTel,jdbcType=VARCHAR},
+      </if>
+      <if test="debtorUserName != null">
+        debtor_user_name = #{debtorUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="debtorLinkmanName != null">
+        debtor_linkman_name = #{debtorLinkmanName,jdbcType=VARCHAR},
+      </if>
+      <if test="debtorLinkmanTel != null">
+        debtor_linkman_tel = #{debtorLinkmanTel,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="brokerage != null">
+        brokerage = #{brokerage,jdbcType=DECIMAL},
+      </if>
+      <if test="brokerageRate != null">
+        brokerage_rate = #{brokerageRate,jdbcType=DECIMAL},
+      </if>
+      <if test="brokerageDesc != null">
+        brokerage_desc = #{brokerageDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="brokeragePaid != null">
+        brokerage_paid = #{brokeragePaid,jdbcType=DECIMAL},
+      </if>
+      <if test="invoice != null">
+        invoice = #{invoice,jdbcType=DECIMAL},
+      </if>
+      <if test="contractBeginDate != null">
+        contract_begin_date = #{contractBeginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractEndDate != null">
+        contract_end_date = #{contractEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractMoney != null">
+        contract_money = #{contractMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="contractPaidMoney != null">
+        contract_paid_money = #{contractPaidMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="salesman != null">
+        salesman = #{salesman,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="handleUser != null">
+        handle_user = #{handleUser,jdbcType=BIGINT},
+      </if>
+      <if test="handleManager != null">
+        handle_manager = #{handleManager,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null">
+        updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kc.model.Case">
+    update case
+    set title = #{title,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      customer_name = #{customerName,jdbcType=VARCHAR},
+      debtor_name = #{debtorName,jdbcType=VARCHAR},
+      customer_linkman_name = #{customerLinkmanName,jdbcType=VARCHAR},
+      customer_linkman_tel = #{customerLinkmanTel,jdbcType=VARCHAR},
+      debtor_user_name = #{debtorUserName,jdbcType=VARCHAR},
+      debtor_linkman_name = #{debtorLinkmanName,jdbcType=VARCHAR},
+      debtor_linkman_tel = #{debtorLinkmanTel,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      brokerage = #{brokerage,jdbcType=DECIMAL},
+      brokerage_rate = #{brokerageRate,jdbcType=DECIMAL},
+      brokerage_desc = #{brokerageDesc,jdbcType=VARCHAR},
+      brokerage_paid = #{brokeragePaid,jdbcType=DECIMAL},
+      invoice = #{invoice,jdbcType=DECIMAL},
+      contract_begin_date = #{contractBeginDate,jdbcType=TIMESTAMP},
+      contract_end_date = #{contractEndDate,jdbcType=TIMESTAMP},
+      contract_money = #{contractMoney,jdbcType=DECIMAL},
+      contract_paid_money = #{contractPaidMoney,jdbcType=DECIMAL},
+      salesman = #{salesman,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      type = #{type,jdbcType=TINYINT},
+      handle_user = #{handleUser,jdbcType=BIGINT},
+      handle_manager = #{handleManager,jdbcType=BIGINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      updated_date = #{updatedDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

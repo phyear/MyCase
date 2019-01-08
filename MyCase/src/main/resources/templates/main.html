@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head  >
+	<title>商务综合管理平台</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<!-- VENDOR CSS -->
+	<link  type="text/css" rel="stylesheet" th:href="@{assets/vendor/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{assets/vendor/font-awesome/css/font-awesome.min.css}">
+	<link rel="stylesheet" th:href="@{assets/vendor/linearicons/style.css}">
+	<link rel="stylesheet" th:href="@{assets/vendor/chartist/css/chartist-custom.css}">
+	
+	<!-- MAIN CSS -->
+	<link rel="stylesheet" th:href="@{assets/css/main.css}">
+	<!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
+	<link rel="stylesheet" th:href="@{assets/css/demo.css}">
+	<!-- GOOGLE FONTS -->
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+	<!-- ICONS -->
+	<link rel="apple-touch-icon" sizes="76x76" th:href="@{assets/img/apple-icon.png}">
+	<link rel="icon" type="image/png" sizes="96x96" th:href="@{assets/img/favicon.png}">
+</head>
+
+<body>
+    
+	<div id="wrapper">
+	    <div th:include="common::navbar" />
+	    <div th:include="common::sidebar" />
+		<!-- MAIN -->
+		<div class="main">
+			<!-- MAIN CONTENT -->
+			<div class="main-content">
+				<div class="container-fluid">
+					<iframe id="myIfram"  name="myIfram"  scrolling="no"  width="100%"    frameborder="0">
+					
+					</iframe>											 					
+				</div>
+			</div>
+			<!-- END MAIN CONTENT -->
+		</div>
+		<!-- END MAIN -->
+		<div class="clearfix"></div>		
+		<th:block th:include="common::footer"/>
+				
+	</div>
+
+	<script th:src="@{assets/vendor/jquery/jquery.min.js}"></script>
+	<script th:src="@{assets/vendor/bootstrap/js/bootstrap.min.js}"></script>
+	<script th:src="@{assets/vendor/jquery-slimscroll/jquery.slimscroll.min.js}"></script>
+	<script th:src="@{assets/vendor/jquery.easy-pie-chart/jquery.easypiechart.min.js}"></script>
+	<script th:src="@{assets/vendor/chartist/js/chartist.min.js}"></script>
+	<script th:src="@{assets/scripts/klorofil-common.js}"></script>	
+	<script type="text/javascript">
+	setInterval ("changeHeight()", 1000);       
+    function changeHeight(){
+    	 var mainheight = $("#myIfram").contents().find("body").height(); 
+    	 if($("#myIfram").height()!=mainheight){        		 
+    		 $("#myIfram").height(mainheight<480 ?480 :mainheight);         		         	    
+    	  }
+    }
+	</script>
+</body>
+
+</html>
